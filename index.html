@@ -48,7 +48,7 @@ table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #0002;pa
 <script>
 // Muestra en pantalla cualquier error (sirve para diagnosticar)
 function showErr(m) { var a = document.getElementById('app'); if (a) a.insertAdjacentHTML('afterbegin', '<div class="card"><b>Error:</b> ' + String(m).replace(/</g, '&lt;') + '</div>'); }
-addEventListener('error', function (e) { showErr(e.message || 'No se pudo cargar un archivo externo'); }, true);
+addEventListener('error', function (e) { if (e.target && e.target !== window) return; showErr(e.message || 'Error desconocido'); }, true);
 addEventListener('unhandledrejection', function (e) { showErr((e.reason && e.reason.message) || e.reason); });
 setTimeout(function () { var a = document.getElementById('app'); if (a && !a.innerHTML.trim()) showErr('La app no arrancó. Etapa: ' + (window.__st || 'ninguna') + ' · supabase: ' + typeof window.supabase + ' · qrcode: ' + typeof window.qrcode); }, 6000);
 </script>
