@@ -213,7 +213,7 @@ const FEAT = [['nfc', 'Chip NFC', 'Acerca cualquier celular al collar y se abre 
 const FAQ = [['¿Necesita batería el chip NFC?', 'No. Funciona sin batería ni cargador: se activa solo cuando acercas un celular.'],
   ['¿Funciona con cualquier celular?', 'La mayoría de los Android y los iPhone modernos leen NFC sin instalar nada. Si el celular no tiene NFC, se escanea el código QR de la misma insignia.'],
   ['¿La suscripción incluye la insignia con el chip?', 'No. La insignia con chip NFC y QR se vende por separado, con un pago único. Si se pierde o se daña, se reprograma y se vende una nueva.'],
-  ['¿Pago algo por actualizar la información de mi mascota?', 'No. El chip solo guarda un enlace a la ficha: lo que cambies en tu cuenta se ve al instante al escanearlo, sin regrabar nada ni pagar de nuevo. En el plan Gratis puedes agregar vacunas y actualizar tu contacto; editar los demás datos de la mascota es del plan Pro.'],
+  ['¿Pago algo por actualizar la información de mi mascota?', 'No. El chip solo guarda un enlace a la ficha: lo que cambies en tu cuenta se ve al instante al escanearlo, sin regrabar nada ni pagar de nuevo. En el plan Gratis puedes actualizar la ficha de salud (vacunas, desparasitación, control médico y corte de pelo) y tu contacto; editar los demás datos de la mascota es del plan Pro.'],
   ['¿Tengo que pagar una mensualidad para usar el chip?', 'No. La insignia es de pago único y con el plan Gratis ya funciona. La mensualidad solo existe si quieres pasar al plan Pro.'],
   ['¿Mi veterinario puede ver la ficha?', 'Con el plan Pro, un veterinario verificado por Pets Date puede consultar el historial completo de tu mascota.'],
   ['¿Qué pasa si pierdo a mi mascota?', 'Con el plan Pro la marcas como perdida: quien escanee su insignia ve el aviso y puede tocar "La encontré". Recibes el aviso con sonido y su ubicación en el mapa mientras tienes la app abierta.'],
@@ -234,7 +234,7 @@ function home() {
   <div class="card step"><span class="num">2</span><h3>Ponle su insignia</h3><p>La insignia con chip NFC y QR va en el collar. Se vende por separado, con pago único.</p></div>
   <div class="card step"><span class="num">3</span><h3>Quien la encuentre, escanea</h3><p>Con un toque o un escaneo ve su ficha y puede llamarte o avisarte.</p></div></div></section>
   <section class="sec"><h2>Planes</h2><div class="grid">
-  <div class="card plan">${ico('star')}<h3>Gratis</h3><p class="pdesc">Explora la plataforma y registra tu primera mascota sin costo</p><div class="price"><b>$0</b> USD</div><ul><li>1 mascota con su ficha</li><li>Agregar vacunas y actualizar tu contacto</li><li>Tu teléfono visible al escanear</li><li class="no">Sin modo perdida, fotos, edición ni acceso de veterinarios</li></ul></div>
+  <div class="card plan">${ico('star')}<h3>Gratis</h3><p class="pdesc">Explora la plataforma y registra tu primera mascota sin costo</p><div class="price"><b>$0</b> USD</div><ul><li>1 mascota con su ficha</li><li>Ficha de salud: vacunas, desparasitación, control médico y corte de pelo</li><li>Recordatorios para tu calendario</li><li>Actualizar tu contacto</li><li>Tu teléfono visible al escanear</li><li class="no">Sin modo perdida, fotos, edición ni acceso de veterinarios</li></ul></div>
   <div class="card plan">${ico('crown')}<h3>Pro</h3><p class="pdesc">Incluye funciones avanzadas de edición y todo lo necesario para encontrar a tu mascota</p><div class="price"><b>$8,50</b> USD/mes</div><ul><li>Varias mascotas</li><li>Foto de cada mascota</li><li>Editar y borrar cuando quieras</li><li>Modo perdida con aviso sonoro y mapa</li><li>Tu veterinario verificado puede ver el historial completo</li><li>Dirección y ciudad en tu perfil</li></ul></div></div>
   <p class="note"><b>Importante:</b> ningún plan incluye la insignia con chip NFC y QR. Se vende por separado, con un pago único. Si se pierde o se daña, se reprograma y se vende una nueva.</p>${wa ? `<div class="row">${wa}</div>` : ''}</section>
   <section class="sec"><h2>Así se ve la insignia</h2><img src="insignia.webp" alt="Insignia NFC y QR de Pets Date" style="display:block;margin:auto;width:min(100%,720px);height:auto;border:2.5px solid var(--ink);border-radius:16px" onerror="this.closest('section').remove()"><p style="text-align:center;margin:8px 0 0"><small>Imagen ilustrativa. Frente: chip NFC · Reverso: código QR de respaldo</small></p></section>
@@ -288,13 +288,13 @@ async function dash() {
   pr = pr || {}; pets = pets || [];
   const canAdd = pro || !pets.length;
   app.innerHTML = `<h2>Mis mascotas <small>Plan ${pro ? 'Pro' : 'Gratis'}</small></h2>${pro ? '<div class="row" style="margin:0 0 14px"><button class="btn o" id="snd">🔔 Probar alerta con sonido</button><input type="file" id="ph" accept="image/*" hidden></div>' : ''}<div class="grid">${pets.map(p => `<div class="card">
-  ${p.photo_url ? `<img src="${esc(p.photo_url)}" alt="" style="width:100%;max-height:200px;object-fit:cover;border:2.5px solid var(--ink);border-radius:12px;margin-bottom:8px">` : ''}<h3>${esc(p.name)} <small>${esc(p.species)}</small></h3><p>${esc(p.breed)} ${esc(p.color)}</p>${p.is_lost ? '<b class="lost">PERDIDA</b>' : ''}
+  ${p.photo_url ? `<img src="${esc(p.photo_url)}" alt="" style="width:100%;max-height:200px;object-fit:cover;border:2.5px solid var(--ink);border-radius:12px;margin-bottom:8px">` : ''}<h3>${esc(p.name)} <small>${esc(p.species)}</small></h3><p>${[p.breed, p.color, p.sex, age(p.birth_date)].filter(Boolean).map(esc).join(" · ")}</p>${p.is_lost ? '<b class="lost">PERDIDA</b>' : ''}
   ${pro ? p.sightings.map(s => `<p>📍 ${new Date(s.created_at).toLocaleString()} – ${esc(s.message)} ${esc(s.contact)} ${s.lat ? `<a href="https://www.google.com/maps?q=${s.lat},${s.lng}" target="_blank" rel="noopener">mapa</a>` : ''}</p>`).join('') : ''}
   <div class="row"><a class="btn o" href="#/pet/${p.tag_code}">Ver ficha</a>
   ${pro ? `<button class="btn o" data-lost="${p.id}" data-v="${!p.is_lost}">${p.is_lost ? 'Ya apareció' : 'Marcar perdida'}</button><button class="btn o" data-ed="${p.id}">Editar</button><button class="btn o" data-ph="${p.id}">📷 Foto</button><button class="btn r" data-del="${p.id}">Borrar</button>`
   : '<button class="btn o" data-lock="1">🔒 Perdida y foto · solo Pro</button>'}</div></div>`).join('')}</div>
   <div class="grid">${canAdd ? `<form class="card" id="np"><h3>Agregar mascota</h3><input name="name" placeholder="Nombre" required>
-  <select name="species"><option>perro</option><option>gato</option><option>otro</option></select><input name="breed" placeholder="Raza"><input name="color" placeholder="Color"><input name="allergies" placeholder="Alergias">
+  <select name="species"><option>perro</option><option>gato</option><option>otro</option></select><input name="breed" placeholder="Raza"><select name="sex"><option value="">Sexo</option><option>Macho</option><option>Hembra</option></select><label>Fecha de nacimiento (si no la sabes, una aproximada)<input name="birth_date" type="date"></label><input name="color" placeholder="Color"><input name="allergies" placeholder="Alergias">
   <button class="btn">Guardar mascota</button></form>` : '<div class="card"><h3>Agregar mascota</h3><p>🔒 El plan gratuito incluye una mascota. Pasa a Pro para agregar más.</p></div>'}
   <form class="card" id="pf"><h3>Mi contacto (se muestra al escanear)</h3><p><small>Quien escanee verá tu primer nombre y tu teléfono. Tu dirección es privada.</small></p><input name="full_name" placeholder="Nombre" value="${esc(pr.full_name)}">
   <input name="phone" placeholder="Teléfono con código de país" value="${esc(pr.phone)}">
@@ -303,7 +303,7 @@ async function dash() {
   if ($('#np')) $('#np').onsubmit = async e => {
     e.preventDefault();
     if (!pro && !confirm('¿Estás seguro de que los datos son correctos?\n\nEn la versión gratuita, una vez guardados no podrás modificarlos ni eliminarlos. En la versión Pro puedes editarlos cuando quieras.')) return;
-    const r = await sb.from('pets').insert(Object.fromEntries(new FormData(e.target))); r.error ? alert(r.error.message) : dash();
+    const o = Object.fromEntries(new FormData(e.target)); o.birth_date = o.birth_date || null; const r = await sb.from('pets').insert(o); r.error ? alert(r.error.message) : dash();
   };
   $('#pf').onsubmit = async e => { e.preventDefault(); const r = await sb.from('profiles').update(Object.fromEntries(new FormData(e.target))).eq('id', user.id); alert(r.error ? r.error.message : 'Contacto guardado'); };
   if ($('#snd')) $('#snd').onclick = () => { beep(); navigator.vibrate && navigator.vibrate(300); };
@@ -321,7 +321,7 @@ async function dash() {
     if (d.lock) alert('Función disponible en la versión Pro.');
     if (d.ph) { window.__ph = d.ph; $('#ph').click(); }
     if (d.lost && (d.v !== 'true' || confirm('¿Marcar a tu mascota como perdida? Se mostrará un aviso a quien escanee su chip.'))) { await sb.from('pets').update({ is_lost: d.v === 'true' }).eq('id', d.lost); dash(); }
-    if (d.ed) { const p = pets.find(x => x.id === d.ed), u = {}; for (const [k, t] of [['name', 'Nombre'], ['breed', 'Raza'], ['color', 'Color'], ['allergies', 'Alergias']]) { const v = prompt(t + ':', p[k] || ''); if (v === null) return; u[k] = v; } await sb.from('pets').update(u).eq('id', d.ed); dash(); }
+    if (d.ed) { const p = pets.find(x => x.id === d.ed), u = {}; for (const [k, t] of [['name', 'Nombre'], ['breed', 'Raza'], ['color', 'Color'], ['allergies', 'Alergias'], ['sex', 'Sexo (Macho/Hembra)'], ['birth_date', 'Fecha de nacimiento (AAAA-MM-DD)']]) { const v = prompt(t + ':', p[k] || ''); if (v === null) return; u[k] = k === 'birth_date' ? (v || null) : v; } await sb.from('pets').update(u).eq('id', d.ed); dash(); }
     if (d.del && confirm('¿Borrar esta mascota y su historial?')) { await sb.from('pets').delete().eq('id', d.del); dash(); }
   };
 }
@@ -344,6 +344,33 @@ function qrModal(code, name) {
   };
 }
 
+const fd = d => d ? d.split('-').reverse().join('/') : '';
+function age(d) {
+  if (!d) return '';
+  const b = new Date(d), n = new Date(); let y = n.getFullYear() - b.getFullYear(), m = n.getMonth() - b.getMonth();
+  if (n.getDate() < b.getDate()) m--;
+  if (m < 0) { y--; m += 12; }
+  const ys = y + (y === 1 ? ' año' : ' años'), ms = m + (m === 1 ? ' mes' : ' meses');
+  return y > 0 ? ys + (m ? ' y ' + ms : '') : ms;
+}
+function cal(title, d) {
+  const a = d.replace(/-/g, ''), n = new Date(d + 'T00:00:00Z'); n.setUTCDate(n.getUTCDate() + 1);
+  const b = n.toISOString().slice(0, 10).replace(/-/g, '');
+  return `<a class="btn o" style="padding:2px 8px;box-shadow:none" target="_blank" rel="noopener" title="Agregar a Google Calendar" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${a}/${b}">📅</a> <button type="button" class="btn o" style="padding:2px 8px;box-shadow:none" title="Descargar para tu calendario" data-ics="${esc(title)}" data-d="${d}">⬇️</button>`;
+}
+function ics(title, d) {
+  const a = d.replace(/-/g, ''), n = new Date(d + 'T00:00:00Z'); n.setUTCDate(n.getUTCDate() + 1);
+  const b = n.toISOString().slice(0, 10).replace(/-/g, ''), st = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const t = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Pets Date//ES', 'BEGIN:VEVENT', 'UID:' + Date.now() + '@petsdate.com.ar', 'DTSTAMP:' + st, 'DTSTART;VALUE=DATE:' + a, 'DTEND;VALUE=DATE:' + b, 'SUMMARY:' + title, 'BEGIN:VALARM', 'TRIGGER:-PT15H', 'ACTION:DISPLAY', 'DESCRIPTION:' + title, 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  const x = document.createElement('a'); x.href = URL.createObjectURL(new Blob([t], { type: 'text/calendar' })); x.download = 'recordatorio.ics'; document.body.append(x); x.click(); x.remove();
+}
+const CARE = [['deworming', 'Desparasitación'], ['checkup', 'Control médico'], ['grooming', 'Corte de pelo']];
+function careHtml(p, c) {
+  c = c || {};
+  const rows = CARE.map(([k, t]) => `<tr><td>${t}</td><td>${fd(c['last_' + k])}</td><td>${fd(c['next_' + k])} ${p.is_owner && c['next_' + k] ? cal(t + ' – ' + p.name, c['next_' + k]) : ''}</td></tr>`).join('');
+  const form = p.is_owner ? `<form id="cf"><div class="grid">${CARE.map(([k, t]) => `<div><b>${t}</b><label>Último<input type="date" name="last_${k}" value="${esc(c['last_' + k])}"></label><label>Próximo<input type="date" name="next_${k}" value="${esc(c['next_' + k])}"></label></div>`).join('')}</div><button class="btn">Guardar cuidados</button></form><p><small>📅 abre Google Calendar y ⬇️ descarga un recordatorio para tu calendario (se avisa el día anterior).</small></p>` : '';
+  return `<h3>Cuidados</h3><table><tr><th></th><th>Último</th><th>Próximo</th></tr>${rows}</table>${form}`;
+}
 async function petPage(code) {
   const { data: p } = await sb.rpc('get_public_pet', { _code: code });
   if (!p) { app.innerHTML = '<div class="card narrow"><h2>Mascota no encontrada</h2></div>'; return; }
@@ -353,16 +380,18 @@ async function petPage(code) {
   app.innerHTML = `<div class="card narrow">${p.is_lost ? `<b class="lost">¡ME PERDÍ! ${esc(p.lost_message)} ${p.reward ? 'Recompensa: ' + esc(p.reward) : ''}</b>` : ''}
   <div class="pic" style="width:60%"><img src="${esc(p.photo_url || 'pets-date-logo.png')}" alt="${esc(p.name)}" style="animation:none"></div>
   <h2>${esc(p.name)} <small>${esc(p.species)} ${esc(p.breed)}</small></h2>
-  <p>Color: ${esc(p.color)}<br>Alergias: ${esc(p.allergies) || 'ninguna registrada'}</p>
+  <p>Sexo: ${esc(p.sex) || 'sin dato'}<br>Edad: ${age(p.birth_date) || 'sin dato'}<br>Color: ${esc(p.color)}<br>Alergias: ${esc(p.allergies) || 'ninguna registrada'}</p>
   <p><b>Familia:</b> ${esc(p.owner_name)}</p>
   ${tel ? `<div class="row"><a class="btn" href="tel:+${tel}">Llamar</a><a class="btn o" href="https://wa.me/${tel}" target="_blank" rel="noopener">WhatsApp</a></div>` : ''}
   ${p.is_lost ? `<details style="margin-top:14px"><summary class="btn o">La encontré / la vi</summary><form id="sf" style="margin-top:10px">
   <textarea name="m" placeholder="¿Dónde y cómo está?" required></textarea><input name="c" placeholder="Tu teléfono o contacto"><button type="button" class="btn o" id="geo">📍 Compartir mi ubicación</button> <small id="gs">Así el dueño ve en el mapa dónde estás.</small><div class="row"><button class="btn">Avisar al dueño</button></div></form></details>` : ''}</div>
   ${full ? `<div class="card"><h3>Ficha de salud</h3><p>Dueño: ${esc(full.owner?.full_name)} · ${esc(full.owner?.phone)} · ${esc(full.owner?.address)} ${esc(full.owner?.city)}</p>
-  <table><tr><th>Vacuna</th><th>Aplicada</th><th>Próxima</th></tr>${full.vaccines.map(v => `<tr><td>${esc(v.name)}</td><td>${esc(v.applied_on)}</td><td>${esc(v.next_due)}</td></tr>`).join('')}</table>
+  <table><tr><th>Vacuna</th><th>Aplicada</th><th>Próxima</th><th></th></tr>${full.vaccines.map(v => `<tr><td>${esc(v.name)}</td><td>${fd(v.applied_on)}</td><td>${fd(v.next_due)}</td><td>${p.is_owner && v.next_due ? cal('Vacuna ' + v.name + ' – ' + p.name, v.next_due) : ''}</td></tr>`).join('')}</table>
   <p><b>Condiciones:</b> ${full.conditions.map(c => esc(c.name) + ' (' + esc(c.status) + ')').join(', ') || 'ninguna'}</p>
+  ${careHtml(p, full.care)}
   ${p.is_owner ? `<form id="vf"><input name="name" placeholder="Nueva vacuna" required><input name="applied_on" type="date"><input name="next_due" type="date"><button class="btn">Agregar vacuna</button></form>` : ''}</div>` : ''}`;
   window.__pos = null;
+  app.onclick = e => { const d = e.target.dataset; if (d.ics) ics(d.ics, d.d); };
   if ($('#geo')) $('#geo').onclick = () => {
     const st = $('#gs'); st.textContent = 'Buscando ubicación…';
     if (!navigator.geolocation) { st.textContent = 'Este navegador no permite compartir ubicación.'; return; }
@@ -376,6 +405,12 @@ async function petPage(code) {
       .then(r => alert(r.error ? r.error.message : '¡Gracias! Ya avisamos a la familia.'));
     if (!window.__pos && !confirm('No compartiste tu ubicación, así que el dueño no verá el mapa. ¿Enviar de todos modos?')) return;
     go(window.__pos);
+  };
+  if ($('#cf')) $('#cf').onsubmit = async e => {
+    e.preventDefault(); const o = Object.fromEntries(new FormData(e.target));
+    for (const k in o) o[k] = o[k] || null;
+    o.pet_id = full.pet.id; o.updated_at = new Date().toISOString();
+    const r = await sb.from('pet_care').upsert(o); r.error ? alert(r.error.message) : petPage(code);
   };
   if ($('#vf')) $('#vf').onsubmit = async e => {
     e.preventDefault(); const o = Object.fromEntries(new FormData(e.target));
